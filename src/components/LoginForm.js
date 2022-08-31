@@ -22,7 +22,6 @@ const LoginForm = ({ handleLogin }) => {
 
   return (
     <form onSubmit={onSubmit}>
-      <h1>log in to application</h1>
       <div>
         username
         <input type='text' value={username} onChange={onUserNameChange} />

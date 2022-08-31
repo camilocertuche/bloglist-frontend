@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Title from './Title';
 
 const INITIAL_BLOG = { title: '', author: '', url: '' };
 
@@ -21,7 +22,7 @@ const AddBlogForm = ({ handleAddBlog }) => {
 
   return (
     <div>
-      <h1>create new</h1>
+      <Title text='create new' />
       <form onSubmit={handleSubmit}>
         <div>
           title:

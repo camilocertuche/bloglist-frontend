@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
-import Blog from './components/Blog';
+import { useState, useEffect, useCallback } from 'react';
+import BlogList from './components/BlogList';
 import LoginForm from './components/LoginForm';
 import AddBlogForm from './components/AddBlogForm';
+import Notification from './components/Notification';
+import LoginInfo from './components/LoginInfo';
+import Title from './components/Title';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -10,11 +13,33 @@ const LOGGED_USER = 'loggedNoteAppUser';
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState(null);
+
+  const showNotification = (text, type) => {
+    setNotification({ text, type });
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
+
+  const showError = useCallback((text) => {
+    showNotification(text, 'error');
+  }, []);
+
+  const showSuccess = useCallback((text) => {
+    showNotification(text, 'success');
+  }, []);
 
   useEffect(() => {
     if (!user) return;
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, [user]);
+
+    blogService
+      .getAll()
+      .then((blogs) => setBlogs(blogs))
+      .catch(({ response }) => {
+        showError(`error getting blogs: ${response.data.error}`);
+      });
+  }, [user, showError]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem(LOGGED_USER);
@@ -27,11 +52,19 @@ const App = () => {
   }, []);
 
   const handleAddBlog = (blog) => {
-    blogService.add(blog).then((addedBlog) => {
-      setBlogs((prevBlogs) => {
-        return [...prevBlogs, addedBlog];
+    blogService
+      .add(blog)
+      .then((addedBlog) => {
+        const { title, author } = addedBlog;
+        showSuccess(`a new blog ${title} by ${author} added`);
+
+        setBlogs((prevBlogs) => {
+          return [...prevBlogs, addedBlog];
+        });
+      })
+      .catch(({ response }) => {
+        showError(`error adding: ${response.data.error}`);
       });
-    });
   };
 
   const handleLogin = (username, password) => {
@@ -43,7 +76,9 @@ const App = () => {
 
         window.localStorage.setItem(LOGGED_USER, JSON.stringify(userLogged));
       })
-      .catch((error) => console.log({ error }));
+      .catch(({ response }) =>
+        showError(`error login: ${response.data.error}`)
+      );
   };
 
   const handleLogout = () => {
@@ -53,19 +88,21 @@ const App = () => {
   };
 
   if (user === null) {
-    return <LoginForm handleLogin={handleLogin} />;
+    return (
+      <div>
+        <Title text='log in to application' />
+        <Notification notification={notification} />
+        <LoginForm handleLogin={handleLogin} />
+      </div>
+    );
   }
   return (
     <div>
-      <h1>blogs</h1>
-      <div style={{ margin: '10px 0px' }}>
-        {`${user.name} logged in`}
-        <button onClick={handleLogout}>logout</button>
-      </div>
+      <Title text='blogs'/>
+      <Notification notification={notification} />
+      <LoginInfo user={user} handleLogout={handleLogout} />
       <AddBlogForm handleAddBlog={handleAddBlog} />
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <BlogList blogs={blogs} />
     </div>
   );
 };
