@@ -6,13 +6,24 @@ const setToken = (newToken) => {
   token = newToken;
 };
 
+const buildConfig = () => {
+  return { headers: { Authorization: `bearer ${token}` } };
+};
+
 const getAll = () => {
-  const config = { headers: { Authorization: `bearer ${token}` } };
+  const config = buildConfig();
 
   const request = axios.get(baseUrl, config);
   return request.then((response) => response.data);
 };
 
-const blogService = { getAll, setToken };
+const add = (blog) => {
+  const config = buildConfig();
+
+  const request = axios.post(baseUrl, blog, config);
+  return request.then((response) => response.data);
+};
+
+const blogService = { add, getAll, setToken };
 
 export default blogService;
