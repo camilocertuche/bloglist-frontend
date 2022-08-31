@@ -24,6 +24,13 @@ const add = (blog) => {
   return request.then((response) => response.data);
 };
 
-const blogService = { add, getAll, setToken };
+const edit = (id, blog) => {
+  const config = buildConfig();
+
+  const request = axios.put(`${baseUrl}/${id}`, blog, config);
+  return request.then((response) => response.data);
+};
+
+const blogService = { add, edit, getAll, setToken };
 
 export default blogService;

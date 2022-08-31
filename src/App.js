@@ -68,6 +68,25 @@ const App = () => {
       });
   };
 
+  const handleEditBlog = (id, blog) => {
+    blogService
+      .edit(id, blog)
+      .then((editedBlog) => {
+        const { title } = editedBlog;
+        showSuccess(`the blog ${title} was successfuly edited`);
+        setBlogs((prevBlogs) => {
+          const newBlogs = prevBlogs.map((blog) =>
+            blog.id !== id ? blog : editedBlog
+          );
+
+          return newBlogs;
+        });
+      })
+      .catch(({ response }) => {
+        showError(`error editing: ${response.data.error}`);
+      });
+  };
+
   const handleLogin = (username, password) => {
     loginService
       .login(username, password)
@@ -105,7 +124,7 @@ const App = () => {
       <Togglable buttonLabel='new blog'>
         <AddBlogForm handleAddBlog={handleAddBlog} />
       </Togglable>
-      <BlogList blogs={blogs} />
+      <BlogList blogs={blogs} handleEditBlog={handleEditBlog} />
     </div>
   );
 };
