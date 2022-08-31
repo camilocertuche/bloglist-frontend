@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-
 import DivWrapper from './DivWrapper';
 
-const Blog = ({ blog, handleEditBlog }) => {
+const Blog = ({ blog, handleEditBlog, handleDeleteBlog, loggedUserName }) => {
   const [detailsVisible, setDetailsVisible] = useState(false);
+  const { id, author, title, user, likes, url } = blog;
+
   const buttonText = detailsVisible ? 'hide' : 'view';
+  const showRemoveButton = user?.username === loggedUserName;
 
   const toggleDatailsVisibility = () => {
     setDetailsVisible((prevState) => !prevState);
   };
 
   const handleLike = () => {
-    const { id, author, title, user, likes, url } = blog;
-
     const editedBlog = {
       user: user?.id,
       likes: likes + 1,
@@ -22,6 +22,12 @@ const Blog = ({ blog, handleEditBlog }) => {
     };
 
     handleEditBlog(id, editedBlog);
+  };
+
+  const handleRemove = () => {
+    if (window.confirm(`Remove ${title} by ${author}`)) {
+      handleDeleteBlog(id);
+    }
   };
 
   return (
@@ -38,6 +44,7 @@ const Blog = ({ blog, handleEditBlog }) => {
             {`likes ${blog.likes}`} <button onClick={handleLike}>like</button>
           </div>
           <div>{blog.author}</div>
+          {showRemoveButton && <button onClick={handleRemove}>remove</button>}
         </div>
       )}
     </DivWrapper>

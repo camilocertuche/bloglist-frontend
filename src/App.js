@@ -96,6 +96,20 @@ const App = () => {
       });
   };
 
+  const handleDeleteBlog = (id) => {
+    blogService
+      .remove(id)
+      .then(() => {
+        showSuccess(`the blog was deleted`);
+        setBlogs((prevBlogs) => {
+          return prevBlogs.filter((blog) => blog.id !== id);
+        });
+      })
+      .catch(({ response }) => {
+        showError(`error deleting: ${response.data.error}`);
+      });
+  };
+
   const handleLogin = (username, password) => {
     loginService
       .login(username, password)
@@ -133,7 +147,12 @@ const App = () => {
       <Togglable buttonLabel='new blog'>
         <AddBlogForm handleAddBlog={handleAddBlog} />
       </Togglable>
-      <BlogList blogs={blogs} handleEditBlog={handleEditBlog} />
+      <BlogList
+        blogs={blogs}
+        handleEditBlog={handleEditBlog}
+        handleDeleteBlog={handleDeleteBlog}
+        loggedUserName={user.username}
+      />
     </div>
   );
 };

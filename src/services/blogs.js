@@ -31,6 +31,13 @@ const edit = (id, blog) => {
   return request.then((response) => response.data);
 };
 
-const blogService = { add, edit, getAll, setToken };
+const remove = (id) => {
+  const config = buildConfig();
+
+  const request = axios.delete(`${baseUrl}/${id}`, config);
+  return request.then((response) => response.data);
+};
+
+const blogService = { add, edit, getAll, remove, setToken };
 
 export default blogService;
