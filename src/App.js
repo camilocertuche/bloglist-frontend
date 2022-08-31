@@ -31,12 +31,19 @@ const App = () => {
     showNotification(text, 'success');
   }, []);
 
+  const compareBlogs = (firstBlog, secondBlog) => {
+    return secondBlog.likes - firstBlog.likes;
+  };
+
   useEffect(() => {
     if (!user) return;
 
     blogService
       .getAll()
-      .then((blogs) => setBlogs(blogs))
+      .then((blogs) => {
+        blogs.sort(compareBlogs);
+        setBlogs(blogs);
+      })
       .catch(({ response }) => {
         showError(`error getting blogs: ${response.data.error}`);
       });
@@ -78,6 +85,8 @@ const App = () => {
           const newBlogs = prevBlogs.map((blog) =>
             blog.id !== id ? blog : editedBlog
           );
+
+          newBlogs.sort(compareBlogs);
 
           return newBlogs;
         });
