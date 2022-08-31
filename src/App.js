@@ -5,6 +5,7 @@ import AddBlogForm from './components/AddBlogForm';
 import Notification from './components/Notification';
 import LoginInfo from './components/LoginInfo';
 import Title from './components/Title';
+import Togglable from './components/Togglable';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -98,10 +99,12 @@ const App = () => {
   }
   return (
     <div>
-      <Title text='blogs'/>
+      <Title text='blogs' />
       <Notification notification={notification} />
       <LoginInfo user={user} handleLogout={handleLogout} />
-      <AddBlogForm handleAddBlog={handleAddBlog} />
+      <Togglable buttonLabel='new blog'>
+        <AddBlogForm handleAddBlog={handleAddBlog} />
+      </Togglable>
       <BlogList blogs={blogs} />
     </div>
   );
