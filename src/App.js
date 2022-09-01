@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import BlogList from './components/BlogList';
 import LoginForm from './components/LoginForm';
 import AddBlogForm from './components/AddBlogForm';
@@ -15,6 +15,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(null);
+  const blogFormRef = useRef();
 
   const showNotification = (text, type) => {
     setNotification({ text, type });
@@ -65,7 +66,7 @@ const App = () => {
       .then((addedBlog) => {
         const { title, author } = addedBlog;
         showSuccess(`a new blog ${title} by ${author} added`);
-
+        blogFormRef.current.toggleVisibility();
         setBlogs((prevBlogs) => {
           return [...prevBlogs, addedBlog];
         });
@@ -144,7 +145,7 @@ const App = () => {
       <Title text='blogs' />
       <Notification notification={notification} />
       <LoginInfo user={user} handleLogout={handleLogout} />
-      <Togglable buttonLabel='new blog'>
+      <Togglable buttonLabel='new blog' ref={blogFormRef}>
         <AddBlogForm handleAddBlog={handleAddBlog} />
       </Togglable>
       <BlogList
