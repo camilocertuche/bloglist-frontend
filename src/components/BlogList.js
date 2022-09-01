@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Blog from './Blog';
 
 const BlogList = ({
@@ -24,6 +25,13 @@ const BlogList = ({
       ))}
     </div>
   );
+};
+
+BlogList.propTypes = {
+  blogs: PropTypes.array.isRequired,
+  handleEditBlog: PropTypes.func.isRequired,
+  handleDeleteBlog: PropTypes.func.isRequired,
+  loggedUserName: PropTypes.string.isRequired,
 };
 
 export default BlogList;
