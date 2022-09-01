@@ -101,7 +101,7 @@ const App = () => {
     blogService
       .remove(id)
       .then(() => {
-        showSuccess(`the blog was deleted`);
+        showSuccess('the blog was deleted');
         setBlogs((prevBlogs) => {
           return prevBlogs.filter((blog) => blog.id !== id);
         });
